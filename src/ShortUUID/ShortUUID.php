@@ -58,9 +58,11 @@ class ShortUUID
      * @param number $padToLength
      * @return string
      */
-    private function numToString($number, $padToLength = null)
+    private function numToString($numberPassed, int $padToLength = null)
     {
         $output = '';
+
+        $number = new \Moontoast\Math\BigNumber($numberPassed);
 
         while ($number->compareTo('0') > 0) {
             $ret = self::divmod($number, $this->alphabetLength);
