@@ -1,10 +1,9 @@
 shortuuid-php
 =============
 
-[![Build Status](https://travis-ci.org/PyYoshi/shortuuid-php.svg)](https://travis-ci.org/PyYoshi/shortuuid-php)
-[![Build Status](https://img.shields.io/packagist/v/PyYoshi/shortuuid-php.svg)](https://packagist.org/packages/pyyoshi/shortuuid-php)
-
 The PHP implementation of [shortuuid](https://github.com/stochastic-technologies/shortuuid).
+
+This is a fork of PyYoshi/shortuuid-php fixing minor issues, tested with Laravel 8 and PHP 8.1.
 
 # Installation
 
