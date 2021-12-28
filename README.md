@@ -9,7 +9,7 @@ The PHP implementation of [shortuuid](https://github.com/stochastic-technologies
 # Installation
 
 ```bash
-composer require pyyoshi/shortuuid-php
+composer require andrew867/shortuuid-php
 ```
 
 or add this library in your ``composer.json``
@@ -17,7 +17,7 @@ or add this library in your ``composer.json``
 ```json
 {
     "require": {
-        "pyyoshi/shortuuid-php": "*"
+        "andrew867/shortuuid-php": "*"
     }
 }
 ```
