@@ -1,5 +1,5 @@
 {
-  "name": "andrew867/shortuuid-php",
+  "name": "gcth/shortuuid-php",
   "description": "",
   "type": "library",
   "keywords": [
@@ -7,28 +7,30 @@
     "identifier",
     "guid"
   ],
-  "homepage": "https://github.com/PyYoshi/shortuuid-php",
+  "homepage": "https://github.com/GCth/shortuuid-php",
   "license": "BSD",
   "authors": [
     {
       "name": "Yoshihiro Misawa",
-      "homepage": "https://github.com/PyYoshi/",
+      "homepage": "https://github.com/GCth/",
       "email": "myoshi321go@gmail.com"
     }
   ],
   "support": {
-    "issues": "https://github.com/PyYoshi/shortuuid-php/issues",
-    "source": "https://github.com/PyYoshi/shortuuid-php/"
+    "issues": "https://github.com/GCth/shortuuid-php/issues",
+    "source": "https://github.com/GCth/shortuuid-php/"
   },
   "autoload": {
     "classmap": ["src/ShortUUID"]
   },
   "require": {
-    "php": ">=5.6",
+    "php": ">=7.1",
     "ramsey/uuid": "*",
-    "moontoast/math": "^1.1"
+    "brick/math": "^0.12"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9"
+    "phpunit/phpunit": "^9",
+    "phpstan/phpstan": "^2.1",
+    "rector/rector": "^2.0"
   }
 }
