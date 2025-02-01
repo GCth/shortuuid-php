@@ -24,7 +24,7 @@
     "classmap": ["src/ShortUUID"]
   },
   "require": {
-    "php": ">=7.1",
+    "php": ">=8.0",
     "ext-bcmath": "*",
     "ramsey/uuid": "*",
     "brick/math": "^0.12"

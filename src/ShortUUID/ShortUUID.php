@@ -3,91 +3,88 @@
 namespace ShortUUID;
 
 use Brick\Math\BigInteger;
+use Ramsey\Uuid\Type\Integer;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 class ShortUUID
 {
+    /** @var string[] */
+    private array $alphabet;
 
-    /**
-     * @var string
-     */
-    private $alphabet;
-
-    /**
-     * @var number
-     */
-    private $alphabetLength;
+    private int $alphabetLength;
 
     /**
      * divmod(a, b) -> (div, mod)
-     *
      * Return the tuple ((a-a%b)/b, a%b).
      *
-     * @param $a
-     * @param $b
      * @return BigInteger[]
      */
-    public static function divmod($a, $b): array
+    private function divmod(BigInteger $a, int $b): array
     {
-        if (!$a instanceof BigInteger) {
-            $a = BigInteger::of($a);
-        }
-        if (!$b instanceof BigInteger) {
-            $b = BigInteger::of($b);
-        }
-        $x = bcdiv(bcsub($a, bcmod($a, $b)), $b);
-        $y = bcmod($a, $b);
+        $bInt = BigInteger::of($b);
+        $x = bcdiv(bcsub($a->toBase(10), bcmod($a, $bInt->toBase(10))), $bInt->toBase(10));
+        $y = bcmod($a, $bInt->toBase(10));
+
         return [
             BigInteger::of($x),
-            BigInteger::of($y)
+            BigInteger::of($y),
         ];
     }
 
-    function __construct($alphabet = null)
+    /**
+     * @param string|string[]|null $alphabet
+     *
+     * @throws ValueError
+     */
+    public function __construct(string|array|null $alphabet = null)
     {
-        if (is_null($alphabet)) {
+        if ($alphabet === null) {
             $alphabet = str_split('23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz');
         }
-        $this->setAlphabet($alphabet);
+
+        if (is_array($alphabet)) {
+            $this->setAlphabet($alphabet);
+        } else {
+            $this->setAlphabet(str_split($alphabet));
+        }
     }
 
     /**
      * Convert a number to a string, using the given alphabet.
-     *
-     * @param BigInteger $number
-     * @param number $padToLength
      */
-    private function numToString(\Ramsey\Uuid\Type\Integer $numberPassed, ?int $padToLength = null): string
+    private function numToString(Integer $numberPassed, ?int $padToLength = null): string
     {
         $output = '';
 
         $number = BigInteger::of($numberPassed);
 
         while ($number->compareTo('0') > 0) {
-            $ret = self::divmod($number, $this->alphabetLength);
-            $number = $ret[0];
-            $digit = $ret[1];
-            $output .= $this->alphabet[(int)$digit->getValue()];
+            $ret = $this->divmod($number, $this->alphabetLength);
+            [$number, $digit] = $ret;
+            assert($digit instanceof BigInteger);
+            $output .= $this->alphabet[(int) $digit->toBase(10)];
         }
-        if (!is_null($padToLength)) {
+        if ($padToLength !== null) {
             $reminder = max($padToLength - strlen($output), 0);
             $output .= str_repeat($this->alphabet[0], $reminder);
         }
+
         return $output;
     }
 
     /**
      * Convert a string to a number, using the given alphabet..
      */
-    private function stringToInt(string $string): int
+    private function stringToInt(string $string): string
     {
         $number = BigInteger::of(0);
         foreach (array_reverse(str_split($string)) as $char) {
-            $x = bcmul($number, $this->alphabetLength);
+            $x = bcmul($number->toBase(10), (string) $this->alphabetLength);
             $y = BigInteger::of(array_keys($this->alphabet, $char)[0]);
-            $number = bcadd($x, $y);
+            $number = BigInteger::of(bcadd($x, $y->toBase(10)));
         }
+
         return $number;
     }
 
@@ -98,6 +95,7 @@ class ShortUUID
     public function encode(UuidInterface $uuid): string
     {
         $padLength = $this->encodedLength(strlen($uuid->getBytes()));
+
         return $this->numToString($uuid->getInteger(), $padLength);
     }
 
@@ -114,25 +112,25 @@ class ShortUUID
 
     /**
      * Generate and return a UUID.
-     *
      * If the $name parameter is provided, set the namespace to the provided
      * name and generate a UUID.
      */
     public function uuid(?string $name = null): string
     {
-        if (is_null($name)) {
+        if ($name === null) {
             $uuid = Uuid::uuid4();
-        } elseif (stristr($name, 'http') == false) {
+        } elseif (stripos($name, 'http') === false) {
             $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $name);
         } else {
             $uuid = Uuid::uuid5(Uuid::NAMESPACE_URL, $name);
         }
+
         return $this->encode($uuid);
     }
 
-    public function random(int $length = 22): void
+    public function random(): void
     {
-        throw new \Exception('Not Implemented!!');
+        throw new \BadMethodCallException('Not Implemented!!');
     }
 
     /**
@@ -140,29 +138,27 @@ class ShortUUID
      */
     public function getAlphabet(): string
     {
-        return implode(null, $this->alphabet);
+        return implode('', $this->alphabet);
     }
 
     /**
-     * @param string|string[] $alphabet
+     * @param string[] $alphabet
+     *
      * @throws ValueError
      */
-    public function setAlphabet($alphabet): void
+    private function setAlphabet(array $alphabet): void
     {
         // Turn the alphabet into a set and sort it to prevent duplicates
         // and ensure reproducibility.
-        if (is_string($alphabet)) {
-            $alphabet = str_split($alphabet);
-        }
         $alphabet = array_values(array_unique($alphabet));
         sort($alphabet, SORT_NATURAL);
         $newAlphabetLength = count($alphabet);
-        if ($newAlphabetLength > 1) {
-            $this->alphabet = $alphabet;
-            $this->alphabetLength = $newAlphabetLength;
-        } else {
+        if ($newAlphabetLength <= 1) {
             throw new ValueError('Alphabet with more than one unique symbols required.');
         }
+
+        $this->alphabet = $alphabet;
+        $this->alphabetLength = $newAlphabetLength;
     }
 
     /**
@@ -171,6 +167,7 @@ class ShortUUID
     public function encodedLength(int $numBytes = 16): int
     {
         $factor = log(256) / log($this->alphabetLength);
-        return (int)ceil($factor * $numBytes);
+
+        return (int) ceil($factor * $numBytes);
     }
 }

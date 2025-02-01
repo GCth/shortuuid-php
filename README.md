@@ -60,8 +60,7 @@ If you want to use your own alphabet to generate UUIDs, use setAlphabet():
 ```php
 use ShortUUID\ShortUUID;
 
-$su = new ShortUUID();
-$su->setAlphabet('aaaaabcdefgh1230123');
+$su = new ShortUUID('aaaaabcdefgh1230123');
 $su->uuid();
 => "ee120aeh2h3bb010fdfedef2c03efcf3h1ca"
 ```
@@ -71,8 +70,7 @@ $su->uuid();
 ```php
 use ShortUUID\ShortUUID;
 
-$su = new ShortUUID();
-$su->setAlphabet('aaaaabcdefgh1230123');
+$su = new ShortUUID('aaaaabcdefgh1230123');
 $su->getAlphabet();
 => "0123abcdefgh"
 ```

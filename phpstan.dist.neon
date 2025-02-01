@@ -1,5 +1,5 @@
 parameters:
-    level: 3
+    level: max
     paths:
         - src/
         - tests/
@@ -12,3 +12,8 @@ parameters:
 
     treatPhpDocTypesAsCertain: false
     checkUninitializedProperties: true
+
+    ignoreErrors:
+        - '/Parameter #1 \$num1 of function bcsub expects numeric-string, string given./'
+        - '/Parameter #1 \$num1 of function bcmul expects numeric-string, string given./'
+        - '/Parameter #2 \$num2 of function bcadd expects numeric-string, string given./'

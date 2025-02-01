@@ -3,9 +3,9 @@
 namespace ShortUUID\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 use ShortUUID\ShortUUID;
 use ShortUUID\ValueError;
-use Ramsey\Uuid\Uuid;
 
 class ShortUUIDTest extends TestCase
 {
@@ -26,17 +26,17 @@ class ShortUUIDTest extends TestCase
     {
         $su = new ShortUUID();
         $u = Uuid::fromString('3b1f8b40-222c-4a6e-b77e-779d5a94e21c');
-        $this->assertEquals($su->encode($u), 'bYRT25J5s7Bniqr4b58cXC');
+        $this->assertEquals('bYRT25J5s7Bniqr4b58cXC', $su->encode($u));
     }
 
     public function testDecoding(): void
     {
         $su = new ShortUUID();
         $u = Uuid::fromString('3b1f8b40-222c-4a6e-b77e-779d5a94e21c');
-        $this->assertEquals($su->decode('bYRT25J5s7Bniqr4b58cXC'), $u);
+        $this->assertEquals($su->decode('bYRT25J5s7Bniqr4b58cXC')->getHex(), $u->getHex());
     }
 
-    public function testAlphabet(): void
+    public function testAlphabet1(): void
     {
         $alphabet = '01';
         $su1 = new ShortUUID($alphabet);
@@ -44,7 +44,7 @@ class ShortUUIDTest extends TestCase
 
         $this->assertEquals($alphabet, $su1->getAlphabet());
 
-        $su1->setAlphabet('01010101010101');
+        $su1 = new ShortUUID('01010101010101');
         $this->assertEquals($alphabet, $su1->getAlphabet());
 
         $d = array_values(array_unique(str_split($su1->uuid())));
@@ -57,39 +57,39 @@ class ShortUUIDTest extends TestCase
         $this->assertTrue(($b > 20) && ($b < 24));
 
         $u = Uuid::uuid4();
-        $this->assertEquals($u, $su1->decode($su1->encode($u)));
+        $this->assertEquals($u->getHex(), $su1->decode($su1->encode($u))->getHex());
 
         $u = $su1->uuid();
         $this->assertEquals($u, $su1->encode($su1->decode($u)));
+    }
 
-        try {
-            $su1->setAlphabet('1');
-        } catch (ValueError $e) {
-            $this->assertTrue(true);
-        }
+    public function testAlphabetException1(): void
+    {
+        $this->expectException(ValueError::class);
+        new ShortUUID('1');
+    }
 
-        try {
-            $su1->setAlphabet('1111111');
-        } catch (ValueError $e) {
-            $this->assertTrue(true);
-        }
+    public function testAlphabetException2(): void
+    {
+        $this->expectException(ValueError::class);
+        new ShortUUID('1111111');
     }
 
     public function testEncodedLength(): void
     {
         $su1 = new ShortUUID();
-        $this->assertEquals($su1->encodedLength(), 22);
+        $this->assertEquals(22, $su1->encodedLength());
 
         $base64Alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
         $su2 = new ShortUUID($base64Alphabet);
-        $this->assertEquals($su2->encodedLength(), 22);
+        $this->assertEquals(22, $su2->encodedLength());
 
         $binaryAlphabet = '01';
         $su3 = new ShortUUID($binaryAlphabet);
-        $this->assertEquals($su3->encodedLength(), 128);
+        $this->assertEquals(128, $su3->encodedLength());
 
         $su4 = new ShortUUID();
-        $this->assertEquals($su4->encodedLength(8), 11);
+        $this->assertEquals(11, $su4->encodedLength(8));
     }
 }

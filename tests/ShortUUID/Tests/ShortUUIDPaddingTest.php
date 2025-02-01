@@ -12,7 +12,7 @@ class ShortUUIDPaddingTest extends TestCase
     {
         $su = new ShortUUID();
         $randomUid = Uuid::uuid4();
-        $smallestUid = Uuid::fromInteger(0);
+        $smallestUid = Uuid::fromInteger('0');
 
         $encodedRandom = $su->encode($randomUid);
         $encodedSmall = $su->encode($smallestUid);
@@ -24,12 +24,12 @@ class ShortUUIDPaddingTest extends TestCase
     {
         $su = new ShortUUID();
         $randomUid = Uuid::uuid4();
-        $smallestUid = Uuid::fromInteger(0);
+        $smallestUid = Uuid::fromInteger('0');
 
         $encodedRandom = $su->encode($randomUid);
         $encodedSmall = $su->encode($smallestUid);
 
-        $this->assertEquals($su->decode($encodedSmall), $smallestUid);
-        $this->assertEquals($su->decode($encodedRandom), $randomUid);
+        $this->assertEquals($su->decode($encodedSmall)->getHex(), $smallestUid->getHex());
+        $this->assertEquals($su->decode($encodedRandom)->getHex(), $randomUid->getHex());
     }
 }
