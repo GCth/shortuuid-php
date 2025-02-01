@@ -58,7 +58,7 @@ class ShortUUID
      * @param BigInteger $number
      * @param number $padToLength
      */
-    private function numToString($numberPassed, ?int $padToLength = null): string
+    private function numToString(\Ramsey\Uuid\Type\Integer $numberPassed, ?int $padToLength = null): string
     {
         $output = '';
 
@@ -79,11 +79,8 @@ class ShortUUID
 
     /**
      * Convert a string to a number, using the given alphabet..
-     *
-     * @param string $string
-     * @return int
      */
-    private function stringToInt($string)
+    private function stringToInt(string $string): int
     {
         $number = BigInteger::of(0);
         foreach (array_reverse(str_split($string)) as $char) {
@@ -97,10 +94,8 @@ class ShortUUID
     /**
      * Encodes a UUID into a string (LSB first) according to the alphabet
      * If leftmost (MSB) bits 0, string might be shorter
-     *
-     * @param UuidInterface $uuid
      */
-    public function encode($uuid): string
+    public function encode(UuidInterface $uuid): string
     {
         $padLength = $this->encodedLength(strlen($uuid->getBytes()));
         return $this->numToString($uuid->getInteger(), $padLength);
@@ -111,11 +106,8 @@ class ShortUUID
      * Raises ValueError when encountering illegal characters
      * or too long string
      * If string too short, fills leftmost (MSB) bits with 0.
-     *
-     * @param $string
-     * @return Uuid
      */
-    public function decode($string): \Ramsey\Uuid\UuidInterface
+    public function decode(string $string): UuidInterface
     {
         return Uuid::fromInteger($this->stringToInt($string));
     }
@@ -125,10 +117,8 @@ class ShortUUID
      *
      * If the $name parameter is provided, set the namespace to the provided
      * name and generate a UUID.
-     *
-     * @param string $name
      */
-    public function uuid($name = null): string
+    public function uuid(?string $name = null): string
     {
         if (is_null($name)) {
             $uuid = Uuid::uuid4();
@@ -140,7 +130,7 @@ class ShortUUID
         return $this->encode($uuid);
     }
 
-    public function random($length = 22)
+    public function random(int $length = 22): void
     {
         throw new \Exception('Not Implemented!!');
     }
@@ -150,7 +140,7 @@ class ShortUUID
      */
     public function getAlphabet(): string
     {
-        return implode('', $this->alphabet);
+        return implode(null, $this->alphabet);
     }
 
     /**
@@ -177,10 +167,8 @@ class ShortUUID
 
     /**
      * Returns the string length of the shortened UUID.
-     *
-     * @param int $numBytes
      */
-    public function encodedLength($numBytes = 16): int
+    public function encodedLength(int $numBytes = 16): int
     {
         $factor = log(256) / log($this->alphabetLength);
         return (int)ceil($factor * $numBytes);
