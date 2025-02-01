@@ -28,7 +28,7 @@ class ShortUUID
      * @param $b
      * @return BigInteger[]
      */
-    public static function divmod($a, $b)
+    public static function divmod($a, $b): array
     {
         if (!$a instanceof BigInteger) {
             $a = BigInteger::of($a);
@@ -57,9 +57,8 @@ class ShortUUID
      *
      * @param BigInteger $number
      * @param number $padToLength
-     * @return string
      */
-    private function numToString($numberPassed, ?int $padToLength = null)
+    private function numToString($numberPassed, ?int $padToLength = null): string
     {
         $output = '';
 
@@ -100,9 +99,8 @@ class ShortUUID
      * If leftmost (MSB) bits 0, string might be shorter
      *
      * @param UuidInterface $uuid
-     * @return string
      */
-    public function encode($uuid)
+    public function encode($uuid): string
     {
         $padLength = $this->encodedLength(strlen($uuid->getBytes()));
         return $this->numToString($uuid->getInteger(), $padLength);
@@ -117,7 +115,7 @@ class ShortUUID
      * @param $string
      * @return Uuid
      */
-    public function decode($string)
+    public function decode($string): \Ramsey\Uuid\UuidInterface
     {
         return Uuid::fromInteger($this->stringToInt($string));
     }
@@ -129,13 +127,12 @@ class ShortUUID
      * name and generate a UUID.
      *
      * @param string $name
-     * @return string
      */
-    public function uuid($name = null)
+    public function uuid($name = null): string
     {
         if (is_null($name)) {
             $uuid = Uuid::uuid4();
-        } else if (stristr($name, 'http') == false) {
+        } elseif (stristr($name, 'http') == false) {
             $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $name);
         } else {
             $uuid = Uuid::uuid5(Uuid::NAMESPACE_URL, $name);
@@ -150,9 +147,8 @@ class ShortUUID
 
     /**
      * Return the current alphabet used for new UUIDs.
-     * @return string
      */
-    public function getAlphabet()
+    public function getAlphabet(): string
     {
         return implode('', $this->alphabet);
     }
@@ -161,7 +157,7 @@ class ShortUUID
      * @param string|string[] $alphabet
      * @throws ValueError
      */
-    public function setAlphabet($alphabet)
+    public function setAlphabet($alphabet): void
     {
         // Turn the alphabet into a set and sort it to prevent duplicates
         // and ensure reproducibility.
@@ -183,9 +179,8 @@ class ShortUUID
      * Returns the string length of the shortened UUID.
      *
      * @param int $numBytes
-     * @return int
      */
-    public function encodedLength($numBytes = 16)
+    public function encodedLength($numBytes = 16): int
     {
         $factor = log(256) / log($this->alphabetLength);
         return (int)ceil($factor * $numBytes);
