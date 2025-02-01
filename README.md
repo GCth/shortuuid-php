@@ -23,15 +23,7 @@ or add this library in your ``composer.json``
 
 # Usage
 
-import
-
-```php
-require dirname(__DIR__) . "/vendor/autoload.php";
-require_once 'ShortUUID/Autoloader.php';
-\ShortUUID\Autoloader::register();
-```
-
-You can then generate a short UUID:
+You can generate a short UUID:
 
 ```php
 use ShortUUID\ShortUUID;
