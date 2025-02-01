@@ -9,7 +9,7 @@ use Ramsey\Uuid\Uuid;
 
 class ShortUUIDTest extends TestCase
 {
-    public function testGeneration()
+    public function testGeneration(): void
     {
         $su = new ShortUUID();
         $a = strlen($su->uuid());
@@ -22,21 +22,21 @@ class ShortUUIDTest extends TestCase
         $this->assertTrue((20 < $d) && ($d < 24));
     }
 
-    public function testEncoding()
+    public function testEncoding(): void
     {
         $su = new ShortUUID();
         $u = Uuid::fromString('3b1f8b40-222c-4a6e-b77e-779d5a94e21c');
         $this->assertEquals($su->encode($u), 'bYRT25J5s7Bniqr4b58cXC');
     }
 
-    public function testDecoding()
+    public function testDecoding(): void
     {
         $su = new ShortUUID();
         $u = Uuid::fromString('3b1f8b40-222c-4a6e-b77e-779d5a94e21c');
         $this->assertEquals($su->decode('bYRT25J5s7Bniqr4b58cXC'), $u);
     }
 
-    public function testAlphabet()
+    public function testAlphabet(): void
     {
         $alphabet = '01';
         $su1 = new ShortUUID($alphabet);
@@ -75,7 +75,7 @@ class ShortUUIDTest extends TestCase
         }
     }
 
-    public function testEncodedLength()
+    public function testEncodedLength(): void
     {
         $su1 = new ShortUUID();
         $this->assertEquals($su1->encodedLength(), 22);

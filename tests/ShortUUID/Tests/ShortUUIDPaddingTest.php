@@ -8,7 +8,7 @@ use Ramsey\Uuid\Uuid;
 
 class ShortUUIDPaddingTest extends TestCase
 {
-    public function testPadding()
+    public function testPadding(): void
     {
         $su = new ShortUUID();
         $randomUid = Uuid::uuid4();
@@ -20,7 +20,7 @@ class ShortUUIDPaddingTest extends TestCase
         $this->assertEquals(strlen($encodedRandom), strlen($encodedSmall));
     }
 
-    public function testDecoding()
+    public function testDecoding(): void
     {
         $su = new ShortUUID();
         $randomUid = Uuid::uuid4();

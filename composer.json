@@ -25,6 +25,7 @@
   },
   "require": {
     "php": ">=7.1",
+    "ext-bcmath": "*",
     "ramsey/uuid": "*",
     "brick/math": "^0.12"
   },

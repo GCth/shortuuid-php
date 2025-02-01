@@ -1,0 +1,35 @@
+parameters:
+    level: 7
+    paths:
+        - src/
+        - config/
+        - public/
+        - tests/
+
+    type_coverage:
+            return: 100
+            param: 100
+            property: 100
+            constant: 100
+            declare: 100
+
+    shipmonkRules:
+            forbidMatchDefaultArmForEnums:
+                enabled: false
+            enforceListReturn:
+                enabled: false
+            enforceReadonlyPublicProperty:
+                enabled: false
+            forbidCast:
+                enabled: false
+            enforceEnumMatch:
+                enabled: false
+            forbidNullInBinaryOperations:
+                enabled: false
+            allowComparingOnlyComparableTypes:
+                enabled: false
+            forbidCheckedExceptionInCallable:
+                enabled: false
+
+    treatPhpDocTypesAsCertain: false
+    checkUninitializedProperties: true
